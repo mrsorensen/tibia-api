@@ -63,6 +63,12 @@ class TibiaCharacter {
 			$this->setResidence($result);
 			// Set achievement points
 			$this->setAchievementPoints($result);
+			// Set last login
+			$this->setLastlogin($result);
+			// Set account status
+			$this->setAccountStatus($result);			
+			// Set guild
+			$this->setGuild($result);
 
 		}
 		// What to do when character does not exsist
@@ -131,21 +137,20 @@ class TibiaCharacter {
 
 	public function setVocation($result){
 
-		// Look for paladins
-		if(strpos($result, '<td>Royal Paladin</td>')) $this->vocation = 'Royal Paladin';
-		elseif(strpos($result, '<td>Paladin</td>')) $this->vocation = 'Paladin';
-		// Look for knights
-		elseif(strpos($result, '<td>Elite Knight</td>')) $this->vocation = 'Elite Knight';
-		elseif(strpos($result, '<td>Knight</td>')) $this->vocation = 'Knight';
-		// Look for sorcerers
-		elseif(strpos($result, '<td>Master Sorcerer</td>')) $this->vocation = 'Master Sorcerer';
-		elseif(strpos($result, '<td>Sorcerer</td>')) $this->vocation = 'Sorcerer';
-		// Look for druids
-		elseif(strpos($result, '<td>Elder Druid</td>')) $this->vocation = 'Elder Druid';
-		elseif(strpos($result, '<td>Druid</td>')) $this->vocation = 'Druid';
-		// Must be rook char then
-		elseif(strpos($result, '<td>None</td>')) $this->vocation = 'None';
+		preg_match('!<td>Vocation:</td><td>.*?</td>!', $result, $voc);
 
+		if(isset($voc) && is_array($voc) && !empty($voc)){
+
+			// Remove html tags
+			$voc= htmlentities($voc[0], ENT_QUOTES);
+			// Remove the first bit of html
+			$voc= substr($voc,40);
+			// Remove the last bit of hmtl
+			$voc= substr($voc, 0, -11);
+			// Set residence
+			$this->vocation= ucwords($voc);
+
+		}
 	}
 
 	public function setResidence($result){
@@ -186,6 +191,66 @@ class TibiaCharacter {
 		}
 	}
 
+	public function setLastLogin($result){
+
+		preg_match("!<tr bgcolor=#F1E0C6><td>Last Login:</td><td>.*?</td></tr>!", $result, $lastLogin);
+
+		if(isset($lastLogin) && is_array($lastLogin) && !empty($lastLogin)){
+
+			// Remove html tags
+			//$lastLogin = htmlentities($lastLogin[0], ENT_QUOTES);
+			// Remove the first bit of html
+			$lastLogin = substr($lastLogin[0], 40);
+			// Remove the last bit of hmtl
+			$lastLogin = substr($lastLogin, 0, -11);
+			// Set residence
+			$this->lastLogin= ucwords($lastLogin);
+
+		}
+
+	}
+
+	public function setAccountStatus($result){
+		
+		// Find the row which reveals the account status
+		preg_match("!<td>Account&#160;Status:</td><td>.*?</td></tr>!", $result, $as);
+
+		if(isset($as) && is_array($as) && !empty($as)){
+
+			// Remove html tags
+			$as= htmlentities($as[0], ENT_QUOTES);
+			// Remove the first bit of html
+			$as= substr($as, 55);
+			// Remove the last bit of hmtl
+			$as= substr($as, 0, -22);
+			// Set residence
+			$this->accountStatus= ucwords($as);
+
+		}
+	}
+	
+	public function setGuild($result){
+
+		// Find the row which reveals the guild
+		preg_match("!<td>Guild&#160;Membership:</td><td>.*?</td></tr>!", $result, $guild);
+
+		if(isset($guild) && is_array($guild) && !empty($guild)){
+
+			// Remove html tags
+			//$guild = htmlentities($guild[0], ENT_QUOTES);
+			// Remove the first bit of html
+			$guild= substr($guild[0], 35);
+			// Remove the last bit of hmtl
+			$guild = substr($guild, 0, -10);
+			// Add target BLANK to link
+			$guild = str_replace('<a href', '<a target="_BLANK" href', $guild);
+			// Set residence
+			$this->guild = $guild;
+
+		}
+	}
+		
+
 	public function setOnlineStatus(){
 
 		// The URL to world online list
@@ -203,11 +268,11 @@ class TibiaCharacter {
 		// Search for character in world online list
 		if(stripos($result, $this->characterNamePlus)){
 			// Return onlinestatus 1 if character is online
-			$this->onlineStatus = 1;
+			$this->onlineStatus = 'Online';
 		}
 		else{
 			// Return onlinestatus 0 if character is offline
-			$this->onlineStatus = 0;
+			$this->onlineStatus = 'Offline';
 		}
 
 		// Close last cURL

@@ -14,6 +14,12 @@ if(isset($_POST['characterName'])){
 }
 
 ?>
+<!doctype html>
+<head>
+<title>Tibia Character API</title>
+</head>
+<body>
+	
 <div style="text-align:center;">
 	
 	<h1>Check Tibia characters online status</h1>
@@ -35,3 +41,5 @@ if(isset($character)){
 }
 ?>
 </div>
+</body>
+</html>
