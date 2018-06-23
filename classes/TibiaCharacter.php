@@ -193,14 +193,14 @@ class TibiaCharacter {
 
 	public function setLastLogin($result){
 
-		preg_match("!<tr bgcolor=#F1E0C6><td>Last Login:</td><td>.*?</td></tr>!", $result, $lastLogin);
+		preg_match("!<td>Last Login:</td><td>.*?</td></tr>!", $result, $lastLogin);
 
 		if(isset($lastLogin) && is_array($lastLogin) && !empty($lastLogin)){
 
 			// Remove html tags
 			//$lastLogin = htmlentities($lastLogin[0], ENT_QUOTES);
 			// Remove the first bit of html
-			$lastLogin = substr($lastLogin[0], 40);
+			$lastLogin = substr($lastLogin[0],15);
 			// Remove the last bit of hmtl
 			$lastLogin = substr($lastLogin, 0, -11);
 			// Set residence
