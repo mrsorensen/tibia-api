@@ -256,7 +256,7 @@ class TibiaCharacter {
 
 	public function setLevel($result){
 
-		// Find the row which reveals the guild
+		// Find the row which reveals the level
 		preg_match("!<td>Level:</td><td>.*?</td></tr>!", $result, $lvl);
 
 		if(isset($lvl) && is_array($lvl) && !empty($lvl)){
