@@ -4,6 +4,7 @@ class TibiaCharacter {
 
 	public $characterName;
 	public $characterNamePlus;
+	public $level;
 	public $world;
 	public $sex;
 	public $vocation;
@@ -69,6 +70,8 @@ class TibiaCharacter {
 			$this->setAccountStatus($result);			
 			// Set guild
 			$this->setGuild($result);
+			// Set level
+			$this->setLevel($result);
 
 		}
 		// What to do when character does not exsist
@@ -250,6 +253,25 @@ class TibiaCharacter {
 		}
 	}
 		
+
+	public function setLevel($result){
+
+		// Find the row which reveals the guild
+		preg_match("!<td>Level:</td><td>.*?</td></tr>!", $result, $lvl);
+
+		if(isset($lvl) && is_array($lvl) && !empty($lvl)){
+
+			// Remove html tags
+			$lvl = htmlentities($lvl[0], ENT_QUOTES);
+			// Remove the first bit of html
+			$lvl = substr($lvl, 37);
+			// Remove the last bit of hmtl
+			$lvl = substr($lvl, 0, -22);
+			// Set residence
+			$this->level = $lvl;
+
+		}
+	}
 
 	public function setOnlineStatus(){
 
