@@ -3,7 +3,6 @@
 class TibiaCharacter {
 
 	public $characterName;
-	public $characterNamePlus;
 	public $level;
 	public $world;
 	public $sex;
@@ -32,15 +31,12 @@ class TibiaCharacter {
 		$characterName = htmlentities($characterName, ENT_QUOTES);
 		// Set character name var
 		$this->characterName = $characterName;
-		// Replace space with + to support tibia.com's search query
-		$this->characterNamePlus = str_replace(" ", "+", $characterName);
-		
 	}
 
 	public function setCharacterInfo(){
 
 		// The URL to character search
-		$characterUrl = "https://secure.tibia.com/community/?subtopic=characters&name=$this->characterNamePlus";
+		$characterUrl = "https://secure.tibia.com/community/?subtopic=characters&name=".str_replace(" ", "+", $this->characterName);
 
 		// cURL
 		$curl = curl_init();
@@ -203,7 +199,7 @@ class TibiaCharacter {
 			// Remove html tags
 			//$lastLogin = htmlentities($lastLogin[0], ENT_QUOTES);
 			// Remove the first bit of html
-			$lastLogin = substr($lastLogin[0],15);
+			$lastLogin = substr($lastLogin[0],24);
 			// Remove the last bit of hmtl
 			$lastLogin = substr($lastLogin, 0, -11);
 			// Set residence
@@ -288,7 +284,7 @@ class TibiaCharacter {
 
 
 		// Search for character in world online list
-		if(stripos($result, $this->characterNamePlus)){
+		if(stripos($result, $this->characterName)){
 			// Return onlinestatus 1 if character is online
 			$this->onlineStatus = 'Online';
 		}

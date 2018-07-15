@@ -4,8 +4,10 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
+// Include the TibiaCharacter class file
 include 'classes/TibiaCharacter.php';
 
+// Construct the TibiaCharacter class if there was an input from the search form
 if(isset($_POST['characterName'])){
 
 	$character = new TibiaCharacter($_POST['characterName']);
@@ -17,6 +19,12 @@ if(isset($_POST['characterName'])){
 <!doctype html>
 <head>
 <title>Tibia Character API</title>
+<style type="text/css" media="all">
+	html {
+		font-family:"cantarell";
+	}	
+	
+</style>
 </head>
 <body>
 	
